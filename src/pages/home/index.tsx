@@ -5,12 +5,13 @@ import { InputBox } from 'src/components/input-box'
 import { Header } from 'src/components/header'
 import { APIKeyDialog } from 'src/components/api-key-dialog'
 import { SettingFormSheet } from 'src/components/setting-form/sheet'
+import { config } from 'src/config'
 
 export default function Home() {
   return (
     <>
       <Helmet>
-        <title>DALL·E 3 Playground</title>
+        <title>{config.appTitle}</title>
       </Helmet>
       <div className="flex h-full flex-col overflow-hidden">
         <Header />

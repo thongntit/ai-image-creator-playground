@@ -1,15 +1,17 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
-import { Quality, Size, Style, useConfigStore } from 'src/stores/config'
+import { Quality, Size, Style, useConfigStore, Model } from 'src/stores/config'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { HelpCircle } from 'lucide-react'
 
+const models: Model[] = ['dall-e-3', 'dall-e-2']
 const sizes: Size[] = ['1024x1024', '1792x1024', '1024x1792']
 const qualities: Quality[] = ['standard', 'hd']
 const styles: Style[] = ['vivid', 'natural']
 
 export const SettingForm = () => {
-  const { quality, setQuality, size, setSize, style, setStyle, apiKey, setAPIKey, reset } = useConfigStore()
+  const { model, setModel, quality, setQuality, size, setSize, style, setStyle, apiKey, setAPIKey, reset } =
+    useConfigStore()
 
   return (
     <div className="flex w-full flex-col space-y-4">
@@ -21,6 +23,25 @@ export const SettingForm = () => {
           </a>
         </Button>
       </div>
+
+      <div>
+        <label className="block py-2">Model</label>
+        <Select value={model || 'dall-e-3'} onValueChange={(value) => setModel(value as Model)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Model" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {models.map((item) => (
+                <SelectItem value={item || 'dall-e-3'} key={item}>
+                  {item?.toUpperCase()}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div>
         <label className="block py-2">Quality</label>
         <Select value={quality} onValueChange={(value) => setQuality(value as Quality)}>
