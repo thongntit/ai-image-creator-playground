@@ -1,12 +1,14 @@
-# DALL·E 3 Playground
+# AI Image Creator Playground folked from [Quilljou DALL·E 3 Playground](https://github.com/Quilljou/dalle3-playground)
 
-DALL·E 3 Playground (Unofficial) is used to play with OpenAI Image generation API - [DALL·E 3](https://openai.com/dall-e-3), You must use your own [OpenAI API Key](https://platform.openai.com/account/api-keys)
+DALL·E Playground (Unofficial) is used to play with OpenAI Image generation API 
+- [DALL·E 3](https://openai.com/dall-e-3)
+- [DALL·E 2](https://openai.com/dall-e-2)
 
-> As of November 20, 2023, DALL·E 3 is not supported by [OpenAI Playground](https://platform.openai.com/playground). Therefore, I have created this playground instead.
+You must use your own [OpenAI API Key](https://platform.openai.com/account/api-keys)
 
 ![screenshot](./screenshots/screenshot.png)
 
-[Live Preview](https://dalle3-playground.pages.dev)
+[Live Preview](https://ai-image-creator-playground.vercel.app/)
 
 
 ## Features
@@ -18,30 +20,10 @@ DALL·E 3 Playground (Unofficial) is used to play with OpenAI Image generation A
 - [x] Cancel generation
 - [x] Error Handling
 
-
-## Project Structure
-
-```sh
-src
-├── app.tsx     # App entry
-├── assets      # Assets for images, favicon etc
-├── components  # React components
-├── hooks       # React hooks
-├── i18n        # i18n files
-├── lib         # Utils、tools、services
-├── main.tsx    # File entry
-├── pages       # One .tsx per page
-├── router.tsx  # Routers
-├── styles      # Less files
-├── types       # Typescript types
-└── vite-env.d.ts
-```
-
-
 ## Dev
 
 ```sh
-yarn
-yarn dev
+pnpm install
+pnpm dev
 ```
 

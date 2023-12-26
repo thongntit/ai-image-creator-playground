@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { Button } from '../ui/button'
-import { Github, MenuIcon, TwitterIcon } from 'lucide-react'
+import { Github, MenuIcon } from 'lucide-react'
 import { useChatStore } from 'src/stores/chat'
 import { config } from 'src/config'
 
@@ -17,11 +17,6 @@ export function Header(props: IProps) {
       </a>
       <div className="flex items-center gap-2">
         {/* <LanguageSelector /> */}
-        <Button size={'icon'} asChild variant={'ghost'}>
-          <a href={config.twitterUrl} target="_blank" rel="noreferrer">
-            <TwitterIcon />
-          </a>
-        </Button>
         <Button size={'icon'} asChild variant={'ghost'}>
           <a href={config.githubUrl} target="_blank" rel="noreferrer">
             <Github />
