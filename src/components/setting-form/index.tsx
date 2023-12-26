@@ -1,17 +1,31 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
-import { Quality, Size, Style, useConfigStore, Model } from 'src/stores/config'
+import { Quality, Size, Style, useConfigStore, Model, NoImage } from 'src/stores/config'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { HelpCircle } from 'lucide-react'
 
 const models: Model[] = ['dall-e-3', 'dall-e-2']
+const noImages: NoImage[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 const sizes: Size[] = ['1024x1024', '1792x1024', '1024x1792']
 const qualities: Quality[] = ['standard', 'hd']
 const styles: Style[] = ['vivid', 'natural']
 
 export const SettingForm = () => {
-  const { model, setModel, quality, setQuality, size, setSize, style, setStyle, apiKey, setAPIKey, reset } =
-    useConfigStore()
+  const {
+    noImage,
+    setNoImage,
+    model,
+    setModel,
+    quality,
+    setQuality,
+    size,
+    setSize,
+    style,
+    setStyle,
+    apiKey,
+    setAPIKey,
+    reset,
+  } = useConfigStore()
 
   return (
     <div className="flex w-full flex-col space-y-4">
@@ -89,6 +103,28 @@ export const SettingForm = () => {
               {styles.map((item) => (
                 <SelectItem value={item!} key={item}>
                   {item?.toUpperCase()}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div>
+        <label className="block py-2">Number of Images</label>
+        <Select
+          value={`${noImage || 1}`}
+          onValueChange={(value) => setNoImage(Number(value) as NoImage)}
+          disabled={model === 'dall-e-3' ? true : false}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Style" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {noImages.map((item) => (
+                <SelectItem value={`${item}`} key={item}>
+                  {item}
                 </SelectItem>
               ))}
             </SelectGroup>

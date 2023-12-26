@@ -1,19 +1,20 @@
+import { OpenAI } from 'openai'
 import { ImageGenerateParams } from 'openai/resources'
+import { imageStore } from 'src/lib/image-persist'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { useConfigStore } from './config'
-import OpenAI from 'openai'
-import { imageStore } from 'src/lib/image-persist'
 
 export type ImageMeta = Pick<ImageGenerateParams, 'quality' | 'size' | 'style'>
 
 export interface Message {
   type: 'user' | 'assistant'
-  content: string
+  content: string[]
   isError: boolean
   isLoading?: boolean
   imageMeta?: ImageMeta
   timestamp: number
+  model?: string | ''
 }
 
 type ChatStore = {
@@ -57,7 +58,7 @@ export const useChatStore = create(
         set(() => ({ inputPrompt }))
       },
       async addMessage() {
-        const { style, size, apiKey, quality, model } = useConfigStore.getState()
+        const { style, size, apiKey, quality, model, noImage } = useConfigStore.getState()
         if (!apiKey) {
           get().toggleApiKeyDialog(true)
           return
@@ -69,8 +70,15 @@ export const useChatStore = create(
           isGenerating: true,
           messages: [
             ...get().messages,
-            { type: 'user', content: get().inputPrompt, isError: false, timestamp: Date.now() },
-            { type: 'assistant', content: '', isError: false, isLoading: true, timestamp: Date.now() },
+            { type: 'user', content: [get().inputPrompt], isError: false, timestamp: Date.now(), model: model || '' },
+            {
+              type: 'assistant',
+              content: [''],
+              isError: false,
+              isLoading: true,
+              timestamp: Date.now(),
+              model: model || '',
+            },
           ],
         }))
         const openai = new OpenAI({
@@ -80,7 +88,7 @@ export const useChatStore = create(
         const options: ImageGenerateParams = {
           prompt: get().inputPrompt,
           model: model,
-          n: 1,
+          n: model === 'dall-e-3' ? 1 : noImage,
           response_format: 'b64_json',
           size: size,
           style: style,
@@ -92,9 +100,13 @@ export const useChatStore = create(
           const completion = await openai.images.generate(options, {
             signal: signal,
           })
-          const base64 = completion.data[0].b64_json
-          if (!base64) throw new Error('invalid base64')
-          const key = await imageStore.storeImage('data:image/png;base64,' + base64)
+          const base64 = (completion.data?.map((image) => image.b64_json)?.filter((img) => img) as string[]) || []
+          if (base64?.length === 0) throw new Error('invalid base64')
+          const key: string[] = []
+          for (const image of base64) {
+            const uuid = await imageStore.storeImage('data:image/png;base64,' + image)
+            key.push(uuid)
+          }
           const imageMeta: ImageMeta = {
             style: useConfigStore.getState().style,
             size: useConfigStore.getState().size,
@@ -106,6 +118,7 @@ export const useChatStore = create(
               ...get().messages.slice(0, -1),
               {
                 type: 'assistant',
+                model: model || '',
                 content: key,
                 imageMeta,
                 isError: false,
