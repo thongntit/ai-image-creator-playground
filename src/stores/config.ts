@@ -4,6 +4,7 @@ import { ImageGenerateParams } from 'openai/resources'
 
 type Defined<T> = T extends undefined ? never : T
 
+export type Model = Defined<ImageGenerateParams['model']>
 export type Quality = Defined<ImageGenerateParams['quality']>
 export type Style = Defined<ImageGenerateParams['style']>
 export type Size = `1024x1024` | `1792x1024` | `1024x1792`
@@ -21,10 +22,13 @@ type ConfigStore = {
   size: Size
   setSize: (style: Size) => void
 
+  model: Model
+  setModel: (model: Model) => void
   reset: () => void
 }
 
-const DEFAULT_CONFIG: Pick<ConfigStore, 'quality' | 'size' | 'style'> = {
+const DEFAULT_CONFIG: Pick<ConfigStore, 'model' | 'quality' | 'size' | 'style'> = {
+  model: 'dall-e-3',
   quality: 'standard',
   style: 'vivid',
   size: '1024x1024',
@@ -32,9 +36,12 @@ const DEFAULT_CONFIG: Pick<ConfigStore, 'quality' | 'size' | 'style'> = {
 
 export const useConfigStore = create(
   persist<ConfigStore>(
-    (set, get) => ({
+    (set) => ({
       ...DEFAULT_CONFIG,
       apiKey: '',
+      setModel(model) {
+        set({ model })
+      },
       setAPIKey(key) {
         set({ apiKey: key })
       },
