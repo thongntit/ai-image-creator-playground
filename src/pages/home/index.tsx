@@ -13,7 +13,7 @@ export default function Home() {
       <Helmet>
         <title>{config.appTitle}</title>
       </Helmet>
-      <div className="flex h-full flex-col overflow-hidden">
+      <div className="flex h-full flex-col overflow-hidden dark:bg-black">
         <Header />
         <div className="flex flex-1 overflow-hidden">
           <div className="flex flex-1 flex-col overflow-hidden">

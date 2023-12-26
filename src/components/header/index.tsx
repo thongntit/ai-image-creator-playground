@@ -16,7 +16,6 @@ export function Header(props: IProps) {
         {config.appTitle}
       </a>
       <div className="flex items-center gap-2">
-        {/* <LanguageSelector /> */}
         <Button size={'icon'} asChild variant={'ghost'}>
           <a href={config.githubUrl} target="_blank" rel="noreferrer">
             <Github />
