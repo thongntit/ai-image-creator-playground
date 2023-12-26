@@ -38,14 +38,22 @@ export const MessageList: React.FC = () => {
   )
 }
 
-const ChatItem = ({ type, content, isLoading, isError, imageMeta, timestamp }: Message) => {
-  const [src, setSrc] = useState('')
+const ChatItem = ({ model, type, content, isLoading, isError, imageMeta, timestamp }: Message) => {
+  const [src, setSrc] = useState([''])
   useEffect(() => {
     ;(async () => {
-      const image = await imageStore.retrieveImage(content)
-      setSrc(image || '')
+      if (type !== 'user') {
+        const newSrc: string[] = []
+        for (const imageUUID of content) {
+          const image = await imageStore.retrieveImage(imageUUID)
+          if (image) {
+            newSrc.push(image)
+          }
+        }
+        setSrc(newSrc)
+      }
     })()
-  }, [content])
+  }, [content, type])
 
   return (
     <div className="border-b border-gray-200 p-4 odd:bg-gray-50 last-of-type:border-none">
@@ -55,7 +63,7 @@ const ChatItem = ({ type, content, isLoading, isError, imageMeta, timestamp }: M
             <div className="w-6">
               <OpenAIIcon />
             </div>
-            DALL·E 3
+            {model === 'dall-e-2' ? 'DALL·E 2' : 'DALL·E 3'}
           </>
         ) : (
           <>
@@ -82,11 +90,11 @@ const ChatItem = ({ type, content, isLoading, isError, imageMeta, timestamp }: M
             </Alert>
           ) : (
             <>
-              {src && (
-                <PhotoView src={src}>
-                  <img src={src} className="w-[200px] cursor-pointer md:w-[300px]"></img>
+              {src?.map((image, index) => (
+                <PhotoView key={index} src={image}>
+                  <img src={image} className="w-[200px] cursor-pointer md:w-[300px]"></img>
                 </PhotoView>
-              )}
+              ))}
             </>
           )}
         </>
