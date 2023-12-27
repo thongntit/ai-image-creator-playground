@@ -5,10 +5,32 @@ import { Input } from '../ui/input'
 import { HelpCircle } from 'lucide-react'
 
 const models: Model[] = ['dall-e-3', 'dall-e-2']
-const noImages: NoImage[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 const sizes: Size[] = ['1024x1024', '1792x1024', '1024x1792']
 const qualities: Quality[] = ['standard', 'hd']
 const styles: Style[] = ['vivid', 'natural']
+
+const configPerModel: Record<
+  string,
+  {
+    noImages: NoImage[]
+    sizes: Size[]
+    qualities: Quality[]
+    styles: Style[]
+  }
+> = {
+  'dall-e-3': {
+    noImages: [],
+    sizes: ['1024x1024', '1792x1024', '1024x1792'],
+    qualities: qualities,
+    styles: styles,
+  },
+  'dall-e-2': {
+    noImages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    sizes: ['256x256', '512x512', '1024x1024'],
+    qualities: [],
+    styles: [],
+  },
+}
 
 export const SettingForm = () => {
   const {
@@ -26,7 +48,7 @@ export const SettingForm = () => {
     setAPIKey,
     reset,
   } = useConfigStore()
-
+  const { noImages, sizes, qualities, styles } = configPerModel[model || ''] || {}
   return (
     <div className="flex w-full flex-col space-y-4">
       <div className="flex items-center justify-start border-b border-gray-200">
@@ -56,81 +78,89 @@ export const SettingForm = () => {
         </Select>
       </div>
 
-      <div>
-        <label className="block py-2">Quality</label>
-        <Select value={quality} onValueChange={(value) => setQuality(value as Quality)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Quality" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {qualities.map((item) => (
-                <SelectItem value={item} key={item}>
-                  {item?.toUpperCase()}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+      {qualities?.length !== 0 && (
+        <div>
+          <label className="block py-2">Quality</label>
+          <Select value={quality} onValueChange={(value) => setQuality(value as Quality)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Quality" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {qualities.map((item) => (
+                  <SelectItem value={item} key={item}>
+                    {item?.toUpperCase()}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
-      <div>
-        <label className="block py-2">Size</label>
-        <Select value={size} onValueChange={(value) => setSize(value as Size)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Size" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {sizes.map((item) => (
-                <SelectItem value={item} key={item}>
-                  {item}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+      {sizes?.length !== 0 && (
+        <div>
+          <label className="block py-2">Size</label>
+          <Select value={size || ''} onValueChange={(value) => setSize(value as Size)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Size" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {sizes.map((item) => (
+                  <SelectItem value={item || ''} key={item}>
+                    {item}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
-      <div>
-        <label className="block py-2">Style</label>
-        <Select value={style!} onValueChange={(value) => setStyle(value as Style)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Style" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {styles.map((item) => (
-                <SelectItem value={item!} key={item}>
-                  {item?.toUpperCase()}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+      {styles?.length !== 0 && (
+        <div>
+          <label className="block py-2">Style</label>
+          <Select value={style!} onValueChange={(value) => setStyle(value as Style)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Style" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {styles.map((item) => (
+                  <SelectItem value={item!} key={item}>
+                    {item?.toUpperCase()}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
-      <div>
-        <label className="block py-2">Number of Images</label>
-        <Select
-          value={`${noImage || 1}`}
-          onValueChange={(value) => setNoImage(Number(value) as NoImage)}
-          disabled={model === 'dall-e-3' ? true : false}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Style" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {noImages.map((item) => (
-                <SelectItem value={`${item}`} key={item}>
-                  {item}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+      {noImages?.length !== 0 && (
+        <div>
+          <label className="block py-2">Number of Images</label>
+          <Select
+            value={`${noImage || 1}`}
+            onValueChange={(value) => setNoImage(Number(value) as NoImage)}
+            disabled={model === 'dall-e-3' ? true : false}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Style" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {noImages.map((item) => (
+                  <SelectItem value={`${item}`} key={item}>
+                    {item}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       <div>
         <label className="block py-2">API Key</label>

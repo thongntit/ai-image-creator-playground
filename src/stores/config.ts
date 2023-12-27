@@ -7,7 +7,7 @@ type Defined<T> = T extends undefined ? never : T
 export type Model = Defined<ImageGenerateParams['model']>
 export type Quality = Defined<ImageGenerateParams['quality']>
 export type Style = Defined<ImageGenerateParams['style']>
-export type Size = `1024x1024` | `1792x1024` | `1024x1792`
+export type Size = Defined<ImageGenerateParams['size']>
 export type NoImage = Defined<ImageGenerateParams['n']>
 
 type ConfigStore = {
