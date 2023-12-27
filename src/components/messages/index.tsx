@@ -89,13 +89,13 @@ const ChatItem = ({ model, type, content, isLoading, isError, imageMeta, timesta
               <AlertDescription>{content}</AlertDescription>
             </Alert>
           ) : (
-            <>
+            <div className="flex gap-1">
               {src?.map((image, index) => (
                 <PhotoView key={index} src={image}>
                   <img src={image} className="w-[200px] cursor-pointer md:w-[300px]"></img>
                 </PhotoView>
               ))}
-            </>
+            </div>
           )}
         </>
       )}
